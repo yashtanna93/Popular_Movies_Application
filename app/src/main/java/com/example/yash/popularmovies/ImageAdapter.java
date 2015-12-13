@@ -14,35 +14,35 @@ import com.squareup.picasso.Picasso;
  */
 public class ImageAdapter extends BaseAdapter {
 
+    int[] movieImages;
     private Context mContext;
-    private Integer[] mThumbIds = {
-            R.drawable.antman,
-            R.drawable.jurassicworld,
-            R.drawable.minions,
-            R.drawable.starwarsepisodeviitheforceawakens,
-            R.drawable.terminatorgenisys
-    };
+    //String[] movieTitles = movie.getMovieTitles();
+    //private Integer[] mThumbIds = {
+    //        R.drawable.antman,
+    //        R.drawable.jurassicworld,
+    //        R.drawable.minions,
+    //        R.drawable.starwarsepisodeviitheforceawakens,
+    //        R.drawable.terminatorgenisys
+    //};
 
-    public ImageAdapter(Context c) {
+    public ImageAdapter(Context c, int[] images) {
         mContext = c;
+        movieImages = images;
     }
 
-    @Override
     public int getCount() {
-        return mThumbIds.length;
+        return movieImages.length;
     }
 
-    @Override
     public Object getItem(int position) {
         return null;
     }
 
-    @Override
     public long getItemId(int position) {
         return 0;
     }
 
-    @Override
+    // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
         if (convertView == null) {
@@ -55,7 +55,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        Picasso.with(mContext).load(mThumbIds[position]).resize(185, 278)
+        Picasso.with(mContext).load(movieImages[position]).resize(185, 278)
                 .into(imageView);
         return imageView;
     }
