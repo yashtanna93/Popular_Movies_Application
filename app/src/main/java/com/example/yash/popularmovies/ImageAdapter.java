@@ -1,6 +1,7 @@
 package com.example.yash.popularmovies;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,7 +15,8 @@ import com.squareup.picasso.Picasso;
  */
 public class ImageAdapter extends BaseAdapter {
 
-    int[] movieImages;
+    String[] movieImages;
+    String API_BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
     private Context mContext;
     //String[] movieTitles = movie.getMovieTitles();
     //private Integer[] mThumbIds = {
@@ -25,7 +27,7 @@ public class ImageAdapter extends BaseAdapter {
     //        R.drawable.terminatorgenisys
     //};
 
-    public ImageAdapter(Context c, int[] images) {
+    public ImageAdapter(Context c, String[] images) {
         mContext = c;
         movieImages = images;
     }
@@ -55,7 +57,11 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        Picasso.with(mContext).load(movieImages[position]).resize(185, 278)
+        Uri imageUri = Uri.parse(API_BASE_IMAGE_URL + movieImages[position])
+                .buildUpon().build();
+        //Log.v("ImageURI - ", imageUri.toString());
+
+        Picasso.with(mContext).load(imageUri.toString()).resize(185, 278)
                 .into(imageView);
         return imageView;
     }

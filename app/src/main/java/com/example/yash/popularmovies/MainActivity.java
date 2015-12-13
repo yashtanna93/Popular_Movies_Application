@@ -19,8 +19,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        MovieFetcher movie = new MovieFetcher();
-        int[] movieImages = movie.getMovieImages();
+        MovieFetcher movie = new MovieFetcher(this);
+        movie.execute();
+        String[] movieImages = movie.getMovieImages();
 
         GridView gridview = (GridView) findViewById(R.id.gridview);
         gridview.setAdapter(new ImageAdapter(this, movieImages));
