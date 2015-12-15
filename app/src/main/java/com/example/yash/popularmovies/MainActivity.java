@@ -13,15 +13,8 @@ import android.widget.GridView;
 public class MainActivity extends AppCompatActivity {
 
     public static final String MOVIE_MESSAGE = "Passing Movie Data";
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Popular Movies");
-
-        final MovieFetcher movie = new MovieFetcher(this);
+    void setGrid(String order) {
+        final MovieFetcher movie = new MovieFetcher(this, order);
         movie.execute();
         String[] movieImages = movie.getMovieImages();
 
@@ -42,6 +35,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Popular Movies");
+
+        setGrid("popularity.desc");
+//        final MovieFetcher movie = new MovieFetcher(this, "popularity.desc");
+//        movie.execute();
+//        String[] movieImages = movie.getMovieImages();
+//
+//        GridView gridview = (GridView) findViewById(R.id.gridview);
+//        gridview.setAdapter(new ImageAdapter(this, movieImages));
+//
+//        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> parent, View v,
+//                                    int position, long id) {
+//                String[] movieData = movie.getMovieData(position);
+//                Bundle b = new Bundle();
+//                b.putStringArray(MOVIE_MESSAGE, movieData);
+//                Intent intent = new Intent(v.getContext(), MovieDetailActivity.class);
+//                intent.putExtras(b);
+//                startActivity(intent);
+//                //Toast.makeText(MainActivity.this, "" + position,
+//                //        Toast.LENGTH_SHORT).show();
+//            }
+//        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -58,8 +81,15 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+        if (id == R.id.menuSortNewest) {
+            setGrid("popularity.desc");
+        }
+
+        if (id == R.id.menuSortRating) {
+            setGrid("vote_average.desc");
         }
 
         return super.onOptionsItemSelected(item);

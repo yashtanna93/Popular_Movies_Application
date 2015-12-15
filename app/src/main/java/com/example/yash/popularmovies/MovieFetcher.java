@@ -31,8 +31,10 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
     Activity mActivity;
     String[] movieImages = new String[20];
     String[][] result;
-    MovieFetcher(Activity a) {
+    String sortOrder;
+    MovieFetcher(Activity a, String sOrder) {
         mActivity = a;
+        sortOrder = sOrder;
     }
 
     public String[] getMovieImages() {
@@ -75,7 +77,7 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
             String ORDER_PARAM = "sort_by";
             String API_KEY_PARAM = "api_key";
             Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
-                    .appendQueryParameter(ORDER_PARAM, "popularity.desc" +
+                    .appendQueryParameter(ORDER_PARAM, sortOrder +
                             "")
                     .appendQueryParameter(API_KEY_PARAM, BuildConfig.TMDB_API_KEY)
                     .build();
