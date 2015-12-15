@@ -1,5 +1,6 @@
 package com.example.yash.popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,18 +9,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String MOVIE_MESSAGE = "Passing Movie Data";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Popular Movies");
 
-        MovieFetcher movie = new MovieFetcher(this);
+        final MovieFetcher movie = new MovieFetcher(this);
         movie.execute();
         String[] movieImages = movie.getMovieImages();
 
@@ -29,8 +31,14 @@ public class MainActivity extends AppCompatActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(MainActivity.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
+                String[] movieData = movie.getMovieData(position);
+                Bundle b = new Bundle();
+                b.putStringArray(MOVIE_MESSAGE, movieData);
+                Intent intent = new Intent(v.getContext(), MovieDetailActivity.class);
+                intent.putExtras(b);
+                startActivity(intent);
+                //Toast.makeText(MainActivity.this, "" + position,
+                //        Toast.LENGTH_SHORT).show();
             }
         });
     }
