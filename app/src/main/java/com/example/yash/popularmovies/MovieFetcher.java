@@ -83,7 +83,7 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
             URL url = new URL(builtUri.toString());
 
 
-            Log.v("Built URI ", url.toString());
+            //Log.v("Built URI ", url.toString());
 
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -114,7 +114,7 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
             result = getMoviesDataFromJson(moviesData);
             for (int i = 0; i < 20; i++) {
                 movieImages[i] = result[i][1];
-                Log.v("Title" + String.valueOf(i), result[i][0]);
+                //Log.v("Title" + String.valueOf(i), result[i][0]);
                 //Log.v("Poster" + String.valueOf(i), result[i][1]);
                 //Log.v("Overview" + String.valueOf(i), result[i][2]);
                 //Log.v("Rating" + String.valueOf(i), result[i][3]);
