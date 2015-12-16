@@ -4,9 +4,9 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:context="com.example.yash.popularmovies.MovieDetailActivity"
-            tools:showIn="@layout/activity_movie_detail"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+            tools:showIn="@layout/activity_movie_detail">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,20 +14,19 @@
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" >
+        android:paddingTop="@dimen/activity_vertical_margin">
 
         <TextView
             android:id="@+id/year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_marginEnd="70dp"
-            android:layout_marginTop="20dp"
             android:text="2015"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#6a6a6a"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/imageView"
+            android:layout_marginLeft="50dp"/>
 
         <TextView
             android:id="@+id/time"
@@ -53,25 +52,22 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="250dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="40dp"
-            android:layout_toStartOf="@+id/year"
-            android:contentDescription="Movie Image"
-            />
+            android:contentDescription="Movie Image"/>
 
         <TextView
+            android:id="@+id/overview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/overview"
-            android:layout_below="@+id/imageView"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
+            android:layout_below="@+id/imageView"
             android:layout_marginTop="20dp"
-            android:layout_alignParentEnd="true"/>
+            android:text="New Text"/>
 
     </RelativeLayout>
 </ScrollView>
