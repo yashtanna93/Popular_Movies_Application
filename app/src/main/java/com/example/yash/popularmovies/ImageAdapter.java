@@ -56,13 +56,17 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-
-        Uri imageUri = Uri.parse(API_BASE_IMAGE_URL + movieImages[position])
+        String movieImage = movieImages[position];
+        Uri imageUri = Uri.parse(API_BASE_IMAGE_URL + movieImage)
                 .buildUpon().build();
         //Log.v("ImageURI - ", imageUri.toString());
-
-        Picasso.with(mContext).load(imageUri.toString()).resize(185, 278)
-                .into(imageView);
+        if("null".equals(movieImage)) {
+            Picasso.with(mContext).load(R.drawable.notavailable).resize(185, 278)
+                    .into(imageView);
+        } else {
+            Picasso.with(mContext).load(imageUri.toString()).resize(185, 278)
+                    .into(imageView);
+        }
         return imageView;
     }
 }

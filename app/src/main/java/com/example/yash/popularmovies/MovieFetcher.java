@@ -73,24 +73,22 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
     @Override
     protected String[][] doInBackground(Void... params) {
         try {
-            String API_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
-            String ORDER_PARAM = "sort_by";
+            String API_BASE_URL = "http://api.themoviedb.org/3/movie";
             String API_KEY_PARAM = "api_key";
             Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
-                    .appendQueryParameter(ORDER_PARAM, sortOrder +
-                            "")
+                    .appendPath(sortOrder)
                     .appendQueryParameter(API_KEY_PARAM, BuildConfig.TMDB_API_KEY)
                     .build();
 
             URL url = new URL(builtUri.toString());
 
 
-            //Log.v("Built URI ", builtUri.toString());
+            Log.v("Built URI ", url.toString());
 
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
+            //urlConnection.setRequestMethod("GET");
+            //urlConnection.connect();
 
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
@@ -109,13 +107,14 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
                 return null;
             }
 
+            urlConnection.disconnect();
             String moviesData = buffer.toString();
             //Log.v("Data", moviesData);
 
             result = getMoviesDataFromJson(moviesData);
             for (int i = 0; i < 20; i++) {
                 movieImages[i] = result[i][1];
-                //Log.v("Title" + String.valueOf(i), result[i][0]);
+                Log.v("Title" + String.valueOf(i), result[i][0]);
                 //Log.v("Poster" + String.valueOf(i), result[i][1]);
                 //Log.v("Overview" + String.valueOf(i), result[i][2]);
                 //Log.v("Rating" + String.valueOf(i), result[i][3]);

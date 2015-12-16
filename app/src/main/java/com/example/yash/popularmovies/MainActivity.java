@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Popular Movies");
 
-        setGrid("popularity.desc");
+        setGrid("popular");
 //        final MovieFetcher movie = new MovieFetcher(this, "popularity.desc");
 //        movie.execute();
 //        String[] movieImages = movie.getMovieImages();
@@ -85,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
 //            return true;
 //        }
         if (id == R.id.menuSortNewest) {
-            setGrid("popularity.desc");
+            setGrid("popular");
         }
 
         if (id == R.id.menuSortRating) {
-            setGrid("vote_average.desc");
+            setGrid("top_rated");
         }
 
         return super.onOptionsItemSelected(item);
