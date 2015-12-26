@@ -16,32 +16,36 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
+import static android.support.v7.widget.RecyclerView.OnScrollListener;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String MyPREFERENCES = "MyPrefs";
     static final String MOVIE_MESSAGE = "Passing Movie Data";
+    public static ArrayList<String[]> result = new ArrayList<String[]>();
     static MovieFetcher movie;
     static ArrayList<String> movieImages = new ArrayList<String>();
     static ArrayList<String> movieNames = new ArrayList<String>();
     static int pagecount = 1;
-    public static ArrayList<String[]> result = new ArrayList<String[]>();
-    RecyclerViewAdapter rcAdapter;
+    static RecyclerViewAdapter rcAdapter;
+    RecyclerView rView;
     SharedPreferences sharedpreferences;
     String sortOrder;
-    private RecyclerView.LayoutManager gLayout;
+    GridLayoutManager gLayout;
+    int scrollposition = 0;
 
-    void setView(String order) throws InterruptedException {
+    public void setView(String order) throws InterruptedException {
         movieImages = new ArrayList<String>();
         movieNames = new ArrayList<String>();
         result = new ArrayList<String[]>();
         for (int i = 1; i <= pagecount; i++) {
-            movie = new MovieFetcher(this, order, i);
+            movie = new MovieFetcher(order, i);
             movie.execute();
             while (movie.getStatus() == AsyncTask.Status.PENDING) {
                 Thread.sleep(100);
             }
         }
-        Display display = getWindowManager().getDefaultDisplay();
+        final Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
@@ -50,13 +54,29 @@ public class MainActivity extends AppCompatActivity {
 
         gLayout = new GridLayoutManager(MainActivity.this, spansize);
 
-        RecyclerView rView = (RecyclerView) findViewById(R.id.recycler_view);
+        rView = (RecyclerView) findViewById(R.id.recycler_view);
         rView.setHasFixedSize(true);
         rView.setLayoutManager(gLayout);
 
         rcAdapter = new RecyclerViewAdapter(MainActivity.this, movieImages,
                 movieNames);
         rView.setAdapter(rcAdapter);
+
+        rView.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                scrollposition += dy;
+                if (gLayout.findLastCompletelyVisibleItemPosition() ==
+                        movieImages.size() - 5) {
+                    Log.v("Scroller", "This is called");
+                    pagecount += 1;
+                    MovieFetcher movie = new MovieFetcher(sortOrder, pagecount);
+                    movie.execute();
+                    Log.v("MovieImagesize", Integer.toString(movieImages.size()));
+                    rcAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     @Override
@@ -66,8 +86,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Popular Movies");
-        sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Log.v("OnCreate", sharedpreferences.getString("SortOrder", "popular"));
+        sharedpreferences = PreferenceManager.getDefaultSharedPreferences
+                (getApplicationContext());
+        // Log.v("OnCreate", sharedpreferences.getString("SortOrder",
+        // "popular"));
         sortOrder = sharedpreferences.getString("SortOrder", "popular");
         try {
             setView(sortOrder);
@@ -93,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.new_page) {
             if (movie.getStatus() == AsyncTask.Status.FINISHED) {
                 pagecount += 1;
-                MovieFetcher movie = new MovieFetcher(this, sortOrder, pagecount);
+                MovieFetcher movie = new MovieFetcher(sortOrder, pagecount);
                 movie.execute();
                 Log.v("MovieImagesize", Integer.toString(movieImages.size()));
                 rcAdapter.notifyDataSetChanged();
