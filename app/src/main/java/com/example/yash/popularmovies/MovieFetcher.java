@@ -1,10 +1,13 @@
 package com.example.yash.popularmovies;
 
 import android.app.Activity;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.GridView;
+import android.view.Display;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +34,7 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
     Activity mActivity;
     String[] movieImages = new String[20];
     String[][] result;
+    String[] movieNames = new String[20];
     String sortOrder;
     MovieFetcher(Activity a, String sOrder) {
         mActivity = a;
@@ -39,6 +43,10 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
 
     public String[] getMovieImages() {
         return movieImages;
+    }
+
+    public String[] getMovieNames() {
+        return movieNames;
     }
 
     public String[] getMovieData(int i) {
@@ -113,6 +121,7 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
 
             result = getMoviesDataFromJson(moviesData);
             for (int i = 0; i < 20; i++) {
+                movieNames[i] = result[i][0];
                 movieImages[i] = result[i][1];
                 //Log.v("Title" + String.valueOf(i), result[i][0]);
                 //Log.v("Poster" + String.valueOf(i), result[i][1]);
@@ -130,9 +139,25 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
 
     @Override
     protected void onPostExecute(String[][] result) {
-        GridView gridview = (GridView) mActivity.findViewById(R.id.gridview);
-        gridview.setAdapter(new ImageAdapter(mActivity.getApplicationContext
-                (), movieImages));
+
+        Display display = mActivity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+
+        int spansize = (int) width / 540;
+
+        RecyclerView.LayoutManager gLayout = new GridLayoutManager
+                (mActivity.getApplicationContext(), spansize);
+
+        RecyclerView rView = (RecyclerView) mActivity.findViewById(R.id
+                .recycler_view);
+        rView.setHasFixedSize(true);
+        rView.setLayoutManager(gLayout);
+
+        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(mActivity.getApplicationContext(),
+                movieImages, movieNames);
+        rView.setAdapter(rcAdapter);
         int i = 0;
         //Log.v("Call number", String.valueOf(i++));
     }

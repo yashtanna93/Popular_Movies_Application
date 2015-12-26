@@ -1,39 +1,42 @@
 package com.example.yash.popularmovies;
 
-import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String MOVIE_MESSAGE = "Passing Movie Data";
-    void setGrid(String order) {
-        final MovieFetcher movie = new MovieFetcher(this, order);
+    private RecyclerView.LayoutManager gLayout;
+    public static MovieFetcher movie;
+    void setView(String order) {
+        movie = new MovieFetcher(this, order);
         movie.execute();
         String[] movieImages = movie.getMovieImages();
+        String[] movieNames = movie.getMovieNames();
 
-        GridView gridview = (GridView) findViewById(R.id.gridview);
-        gridview.setAdapter(new ImageAdapter(this, movieImages));
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                String[] movieData = movie.getMovieData(position);
-                Bundle b = new Bundle();
-                b.putStringArray(MOVIE_MESSAGE, movieData);
-                Intent intent = new Intent(v.getContext(), MovieDetailActivity.class);
-                intent.putExtras(b);
-                startActivity(intent);
-                //Toast.makeText(MainActivity.this, "" + position,
-                //        Toast.LENGTH_SHORT).show();
-            }
-        });
+        int spansize = (int) width / 540;
+
+        gLayout = new GridLayoutManager(MainActivity.this, spansize);
+
+        RecyclerView rView = (RecyclerView) findViewById(R.id.recycler_view);
+        rView.setHasFixedSize(true);
+        rView.setLayoutManager(gLayout);
+
+        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(MainActivity
+                .this, movieImages, movieNames);
+        rView.setAdapter(rcAdapter);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,27 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Popular Movies");
 
-        setGrid("popular");
-//        final MovieFetcher movie = new MovieFetcher(this, "popularity.desc");
-//        movie.execute();
-//        String[] movieImages = movie.getMovieImages();
-//
-//        GridView gridview = (GridView) findViewById(R.id.gridview);
-//        gridview.setAdapter(new ImageAdapter(this, movieImages));
-//
-//        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> parent, View v,
-//                                    int position, long id) {
-//                String[] movieData = movie.getMovieData(position);
-//                Bundle b = new Bundle();
-//                b.putStringArray(MOVIE_MESSAGE, movieData);
-//                Intent intent = new Intent(v.getContext(), MovieDetailActivity.class);
-//                intent.putExtras(b);
-//                startActivity(intent);
-//                //Toast.makeText(MainActivity.this, "" + position,
-//                //        Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        setView("popular");
     }
 
     @Override
@@ -85,11 +68,11 @@ public class MainActivity extends AppCompatActivity {
 //            return true;
 //        }
         if (id == R.id.menuSortNewest) {
-            setGrid("popular");
+            setView("popular");
         }
 
         if (id == R.id.menuSortRating) {
-            setGrid("top_rated");
+            setView("top_rated");
         }
 
         return super.onOptionsItemSelected(item);
