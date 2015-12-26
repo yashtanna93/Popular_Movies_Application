@@ -18,11 +18,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by Yash on 12/12/2015.
  */
-public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
+public class MovieFetcher extends AsyncTask<Void, Void, ArrayList<String[]>> {
 //    int[] movieImages = {
 //            R.drawable.antman,
 //            R.drawable.jurassicworld,
@@ -32,29 +33,21 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
 //    };
 
     Activity mActivity;
-    String[] movieImages = new String[20];
-    String[][] result;
-    String[] movieNames = new String[20];
+
     String sortOrder;
-    MovieFetcher(Activity a, String sOrder) {
+    String pageNumber;
+    MovieFetcher(Activity a, String sOrder, int page) {
         mActivity = a;
         sortOrder = sOrder;
-    }
-
-    public String[] getMovieImages() {
-        return movieImages;
-    }
-
-    public String[] getMovieNames() {
-        return movieNames;
+        pageNumber = Integer.toString(page);
     }
 
     public String[] getMovieData(int i) {
-        return result[i];
+        return MainActivity.result.get(i);
     }
 
-    private String[][] getMoviesDataFromJson(String moviesDataJsonStr) throws
-            JSONException {
+    private ArrayList<String[]> getMoviesDataFromJson(String moviesDataJsonStr)
+            throws JSONException {
         String RESULT = "results";
         String ORIGINAL_TITLE = "original_title";
         String POSTER_PATH = "poster_path";
@@ -65,27 +58,31 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
         JSONObject moviesJson = new JSONObject(moviesDataJsonStr);
         JSONArray moviesArray = moviesJson.getJSONArray(RESULT);
 
-        String[][] resultStrs = new String[20][5];
-
+        ArrayList<String[]> resultStrs = new ArrayList<String[]>();
         for (int i = 0; i < moviesArray.length(); i++) {
             JSONObject movieData = moviesArray.getJSONObject(i);
-            resultStrs[i][0] = movieData.getString(ORIGINAL_TITLE);
-            resultStrs[i][1] = movieData.getString(POSTER_PATH);
-            resultStrs[i][2] = movieData.getString(OVERVIEW);
-            resultStrs[i][3] = String.valueOf(movieData.getDouble(USER_RATING));
-            resultStrs[i][4] = movieData.getString(RELEASE_DATA);
+            String[] resultpermovie = new String[5];
+            resultpermovie[0] = movieData.getString(ORIGINAL_TITLE);
+            resultpermovie[1] = movieData.getString(POSTER_PATH);
+            resultpermovie[2] = movieData.getString(OVERVIEW);
+            resultpermovie[3] = String.valueOf(movieData.getDouble(USER_RATING));
+            resultpermovie[4] = movieData.getString(RELEASE_DATA);
+            //Log.v("JSON_TITLE", resultpermovie[0]);
+            resultStrs.add(i, resultpermovie);
         }
         return resultStrs;
     }
 
     @Override
-    protected String[][] doInBackground(Void... params) {
+    protected ArrayList<String[]> doInBackground(Void... params) {
         try {
             String API_BASE_URL = "http://api.themoviedb.org/3/movie";
             String API_KEY_PARAM = "api_key";
+            String PAGE_PARAM = "page";
             Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
                     .appendPath(sortOrder)
                     .appendQueryParameter(API_KEY_PARAM, BuildConfig.TMDB_API_KEY)
+                    .appendQueryParameter(PAGE_PARAM, pageNumber)
                     .build();
 
             URL url = new URL(builtUri.toString());
@@ -119,18 +116,20 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
             String moviesData = buffer.toString();
             //Log.v("Data", moviesData);
 
-            result = getMoviesDataFromJson(moviesData);
-            for (int i = 0; i < 20; i++) {
-                movieNames[i] = result[i][0];
-                movieImages[i] = result[i][1];
-                //Log.v("Title" + String.valueOf(i), result[i][0]);
-                //Log.v("Poster" + String.valueOf(i), result[i][1]);
+            MainActivity.result.addAll(getMoviesDataFromJson(moviesData));
+            for (int i = ((Integer.parseInt(pageNumber) * 20) - 20);
+                 i < MainActivity.result.size(); i++) {
+                String[] movie = MainActivity.result.get(i);
+                MainActivity.movieNames.add(movie[0]);
+                MainActivity.movieImages.add(movie[1]);
+                //Log.v("Title" + String.valueOf(i), movie[0]);
+                //Log.v("Poster" + String.valueOf(i), movie[1]);
                 //Log.v("Overview" + String.valueOf(i), result[i][2]);
                 //Log.v("Rating" + String.valueOf(i), result[i][3]);
                 //Log.v("ReleaseDate" + String.valueOf(i), result[i][4]);
             }
 
-            return result;
+            return MainActivity.result;
         } catch (Exception e) {
             Log.v("Exception", e.toString());
         }
@@ -138,7 +137,7 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
     }
 
     @Override
-    protected void onPostExecute(String[][] result) {
+    protected void onPostExecute(ArrayList<String[]> result) {
 
         Display display = mActivity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -156,9 +155,8 @@ public class MovieFetcher extends AsyncTask<Void, Void, String[][]> {
         rView.setLayoutManager(gLayout);
 
         RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(mActivity.getApplicationContext(),
-                movieImages, movieNames);
+                MainActivity.movieImages, MainActivity.movieNames);
         rView.setAdapter(rcAdapter);
-        int i = 0;
         //Log.v("Call number", String.valueOf(i++));
     }
 }

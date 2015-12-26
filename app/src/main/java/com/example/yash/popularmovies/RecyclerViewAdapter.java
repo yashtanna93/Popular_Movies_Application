@@ -9,18 +9,20 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 /**
  * Created by Yash on 12/25/2015.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders> {
 
-    private String[] movieImages;
-    private String[] movieNames;
+    private ArrayList<String> movieImages;
+    private ArrayList<String> movieNames;
     private Context context;
     String API_BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
 
-    public RecyclerViewAdapter(Context context, String[] movieImages,
-                               String[] movieNames) {
+    public RecyclerViewAdapter(Context context, ArrayList<String> movieImages,
+                               ArrayList<String> movieNames) {
         this.movieImages = movieImages;
         this.movieNames = movieNames;
         this.context = context;
@@ -37,22 +39,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
 
-        String movieImage = movieImages[position];
+        String movieImage = movieImages.get(position);
         Uri imageUri = Uri.parse(API_BASE_IMAGE_URL + movieImage)
                 .buildUpon().build();
         if("null".equals(movieImage)) {
             Picasso.with(context).load(R.drawable.notavailable).into(holder
                     .moviePoster);
-            holder.movieName.setText(movieNames[position]);
+            holder.movieName.setText(movieNames.get(position));
         } else {
             Picasso.with(context).load(imageUri.toString()).resize(185,630)
                     .into(holder.moviePoster);
-            holder.movieName.setText(movieNames[position]);
+            holder.movieName.setText(movieNames.get(position));
         }
     }
 
     @Override
     public int getItemCount() {
-        return this.movieImages.length;
+        return movieImages.size();
     }
 }

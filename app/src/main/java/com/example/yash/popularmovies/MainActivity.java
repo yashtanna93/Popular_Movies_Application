@@ -1,26 +1,46 @@
 package com.example.yash.popularmovies;
 
+import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
-    public static final String MOVIE_MESSAGE = "Passing Movie Data";
+    public static final String MyPREFERENCES = "MyPrefs";
+    static final String MOVIE_MESSAGE = "Passing Movie Data";
+    static MovieFetcher movie;
+    static ArrayList<String> movieImages = new ArrayList<String>();
+    static ArrayList<String> movieNames = new ArrayList<String>();
+    static int pagecount = 1;
+    public static ArrayList<String[]> result = new ArrayList<String[]>();
+    RecyclerViewAdapter rcAdapter;
+    SharedPreferences sharedpreferences;
+    String sortOrder;
     private RecyclerView.LayoutManager gLayout;
-    public static MovieFetcher movie;
-    void setView(String order) {
-        movie = new MovieFetcher(this, order);
-        movie.execute();
-        String[] movieImages = movie.getMovieImages();
-        String[] movieNames = movie.getMovieNames();
 
+    void setView(String order) throws InterruptedException {
+        movieImages = new ArrayList<String>();
+        movieNames = new ArrayList<String>();
+        result = new ArrayList<String[]>();
+        for (int i = 1; i <= pagecount; i++) {
+            movie = new MovieFetcher(this, order, i);
+            movie.execute();
+            while (movie.getStatus() == AsyncTask.Status.PENDING) {
+                Thread.sleep(100);
+            }
+        }
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -34,10 +54,11 @@ public class MainActivity extends AppCompatActivity {
         rView.setHasFixedSize(true);
         rView.setLayoutManager(gLayout);
 
-        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(MainActivity
-                .this, movieImages, movieNames);
+        rcAdapter = new RecyclerViewAdapter(MainActivity.this, movieImages,
+                movieNames);
         rView.setAdapter(rcAdapter);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +66,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Popular Movies");
-
-        setView("popular");
+        sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Log.v("OnCreate", sharedpreferences.getString("SortOrder", "popular"));
+        sortOrder = sharedpreferences.getString("SortOrder", "popular");
+        try {
+            setView(sortOrder);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -63,16 +90,43 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        if (id == R.id.new_page) {
+            if (movie.getStatus() == AsyncTask.Status.FINISHED) {
+                pagecount += 1;
+                MovieFetcher movie = new MovieFetcher(this, sortOrder, pagecount);
+                movie.execute();
+                Log.v("MovieImagesize", Integer.toString(movieImages.size()));
+                rcAdapter.notifyDataSetChanged();
+            }
+        }
         if (id == R.id.menuSortNewest) {
-            setView("popular");
+            pagecount = 1;
+            try {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString("SortOrder", "popular");
+                editor.commit();
+                Log.v("popular", sharedpreferences.getString("SortOrder",
+                        null));
+                sortOrder = "popular";
+                setView(sortOrder);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         if (id == R.id.menuSortRating) {
-            setView("top_rated");
+            pagecount = 1;
+            try {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString("SortOrder", "top_rated");
+                editor.commit();
+                Log.v("top_rated", sharedpreferences.getString("SortOrder",
+                        null));
+                sortOrder = "top_rated";
+                setView(sortOrder);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         return super.onOptionsItemSelected(item);
