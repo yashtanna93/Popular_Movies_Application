@@ -3,27 +3,27 @@ package com.example.yash.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by Yash on 12/25/2015.
  */
 public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
-    public ImageView moviePoster;
+    ImageView moviePoster;
     Movies movieList;
     String MOVIE_MESSAGE = "Passing Movie Data";
     public RecyclerViewHolders(View itemView, Movies movieList) {
         super(itemView);
         itemView.setOnClickListener(this);
-        moviePoster = (ImageView)itemView.findViewById(R.id.movie_poster);
+        moviePoster = ButterKnife.findById(itemView, R.id.movie_poster);
         this.movieList = movieList;
     }
 
     @Override
     public void onClick(View view) {
-        Log.v("Size", movieList.getEachMovie(getAdapterPosition()).getMovieTitle());
         String[] movieData = new String[5];
         movieData[0] = movieList.getEachMovie(getAdapterPosition()).getMovieTitle();
         movieData[1] = movieList.getEachMovie(getAdapterPosition()).getPosterPath();

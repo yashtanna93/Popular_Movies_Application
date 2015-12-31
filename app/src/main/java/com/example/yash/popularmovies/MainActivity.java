@@ -10,6 +10,8 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sharedpreferences;
@@ -20,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+        Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Popular Movies");
         sharedpreferences = PreferenceManager.getDefaultSharedPreferences

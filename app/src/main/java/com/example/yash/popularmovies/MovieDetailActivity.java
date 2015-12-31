@@ -1,6 +1,5 @@
 package com.example.yash.popularmovies;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +10,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import butterknife.ButterKnife;
+
 public class MovieDetailActivity extends AppCompatActivity {
 
     String MOVIE_MESSAGE = "Passing Movie Data";
@@ -18,29 +19,26 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         String API_BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
         super.onCreate(savedInstanceState);
+        ButterKnife.bind(this);
         setContentView(R.layout.activity_movie_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = getIntent();
         Bundle b = this.getIntent().getExtras();
         String[] movieDetails = b.getStringArray(MOVIE_MESSAGE);
-//        for(int i=0; i<movieDetails.length; i++) {
-//            Log.v("Data1234", movieDetails[i]);
-//        }
-        TextView movieName = (TextView) findViewById(R.id.moviename);
+        TextView movieName = ButterKnife.findById(this, R.id.moviename);
         movieName.setText(movieDetails[0]);
-        TextView overview = (TextView) findViewById(R.id.overview);
+        TextView overview = ButterKnife.findById(this, R.id.overview);
         overview.setText(movieDetails[2]);
-        TextView rating = (TextView) findViewById(R.id.rating);
+        TextView rating = ButterKnife.findById(this, R.id.rating);
         rating.setText(movieDetails[3] + "/10");
-        TextView year = (TextView) findViewById(R.id.year);
+        TextView year = ButterKnife.findById(this, R.id.year);
         year.setText(movieDetails[4].substring(0, 4));
         Uri moviePosterURI = Uri.parse(API_BASE_IMAGE_URL + movieDetails[1])
                 .buildUpon().build();
-        //Log.v("POSTERURI", moviePosterURI.toString());
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+
+        ImageView imageView = ButterKnife.findById(this, R.id.imageView);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         Picasso.with(getApplicationContext()).load(moviePosterURI.toString())
                 .into(imageView);
