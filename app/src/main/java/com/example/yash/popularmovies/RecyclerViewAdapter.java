@@ -17,44 +17,50 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders> {
 
     private ArrayList<String> movieImages;
-    private ArrayList<String> movieNames;
     private Context context;
     String API_BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
+    Movies movieList;
 
-    public RecyclerViewAdapter(Context context, ArrayList<String> movieImages,
-                               ArrayList<String> movieNames) {
+    public RecyclerViewAdapter(Context context, ArrayList<String>
+            movieImages) {
         this.movieImages = movieImages;
-        this.movieNames = movieNames;
         this.context = context;
+    }
+
+    public void updateMovieList(Movies movieList){
+        this.movieList = movieList;
     }
 
     @Override
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R
                 .layout.content_cards, null);
-        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
+        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView, movieList);
         return rcv;
     }
 
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
-
         String movieImage = movieImages.get(position);
         Uri imageUri = Uri.parse(API_BASE_IMAGE_URL + movieImage)
                 .buildUpon().build();
         if("null".equals(movieImage)) {
             Picasso.with(context).load(R.drawable.notavailable).into(holder
                     .moviePoster);
-            holder.movieName.setText(movieNames.get(position));
         } else {
             Picasso.with(context).load(imageUri.toString()).resize(185,630)
                     .into(holder.moviePoster);
-            holder.movieName.setText(movieNames.get(position));
         }
     }
 
     @Override
     public int getItemCount() {
         return movieImages.size();
+    }
+
+    public void clear() {
+        int size = movieImages.size();
+        movieImages.clear();
+        this.notifyItemRangeRemoved(0, size);
     }
 }

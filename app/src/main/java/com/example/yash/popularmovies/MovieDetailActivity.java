@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
+    String MOVIE_MESSAGE = "Passing Movie Data";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String API_BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
@@ -24,7 +25,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle b = this.getIntent().getExtras();
-        String[] movieDetails = b.getStringArray(MainActivity.MOVIE_MESSAGE);
+        String[] movieDetails = b.getStringArray(MOVIE_MESSAGE);
 //        for(int i=0; i<movieDetails.length; i++) {
 //            Log.v("Data1234", movieDetails[i]);
 //        }
