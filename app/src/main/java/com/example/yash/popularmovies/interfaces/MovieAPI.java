@@ -1,4 +1,6 @@
-package com.example.yash.popularmovies;
+package com.example.yash.popularmovies.interfaces;
+
+import com.example.yash.popularmovies.models.Movies;
 
 import retrofit.http.GET;
 import retrofit.http.Path;

@@ -1,4 +1,4 @@
-package com.example.yash.popularmovies;
+package com.example.yash.popularmovies.adapters;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.yash.popularmovies.models.Movies;
+import com.example.yash.popularmovies.R;
+import com.example.yash.popularmovies.utils.RecyclerViewHolders;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.yash.popularmovies;
+package com.example.yash.popularmovies.utils;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,13 +6,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.yash.popularmovies.R;
+import com.example.yash.popularmovies.activities.MovieDetailActivity;
+import com.example.yash.popularmovies.models.Movies;
+
 import butterknife.ButterKnife;
 
 /**
  * Created by Yash on 12/25/2015.
  */
 public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
-    ImageView moviePoster;
+    public ImageView moviePoster;
     Movies movieList;
     String MOVIE_MESSAGE = "Passing Movie Data";
     public RecyclerViewHolders(View itemView, Movies movieList) {
@@ -24,13 +28,9 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
 
     @Override
     public void onClick(View view) {
-        String[] movieData = new String[5];
-        movieData[0] = movieList.getEachMovie(getAdapterPosition()).getMovieTitle();
-        movieData[1] = movieList.getEachMovie(getAdapterPosition()).getPosterPath();
-        movieData[2] = movieList.getEachMovie(getAdapterPosition()).getMovieOverview();
-        movieData[3] = Double.toString(movieList.getEachMovie(getAdapterPosition())
-                .getMovieVoteAverage());
-        movieData[4] = movieList.getEachMovie(getAdapterPosition()).getReleaseDate();
+        CreateMovieData createMovieData = new CreateMovieData(movieList,
+                getAdapterPosition());
+        String[] movieData = createMovieData.getMovieData();
         Bundle b = new Bundle();
         b.putStringArray(MOVIE_MESSAGE, movieData);
         Intent intent = new Intent(view.getContext(), MovieDetailActivity

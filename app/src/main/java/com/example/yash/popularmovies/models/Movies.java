@@ -1,4 +1,4 @@
-package com.example.yash.popularmovies;
+package com.example.yash.popularmovies.models;
 
 /**
  * Created by Yash on 12/28/2015.
@@ -12,7 +12,7 @@ import java.util.List;
 public class Movies {
 
     @SerializedName("results")
-    List<Movie> movies = new ArrayList<>();
+    public List<Movie> movies = new ArrayList<>();
 
     public List<Movie> getMovies() {
         return movies;

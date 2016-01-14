@@ -1,4 +1,4 @@
-package com.example.yash.popularmovies;
+package com.example.yash.popularmovies.network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +7,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+
+import com.example.yash.popularmovies.BuildConfig;
+import com.example.yash.popularmovies.adapters.RecyclerViewAdapter;
+import com.example.yash.popularmovies.interfaces.MovieAPI;
+import com.example.yash.popularmovies.models.Movies;
 
 import java.util.ArrayList;
 
@@ -31,7 +36,7 @@ public class MovieFetcher {
     Context context;
     Movies movieList = new Movies();
 
-    MovieFetcher(Context context) {
+    public MovieFetcher(Context context) {
         this.context = context;
     }
 

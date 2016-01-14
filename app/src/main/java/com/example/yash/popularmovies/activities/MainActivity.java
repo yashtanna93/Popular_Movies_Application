@@ -1,4 +1,4 @@
-package com.example.yash.popularmovies;
+package com.example.yash.popularmovies.activities;
 
 import android.content.SharedPreferences;
 import android.graphics.Point;
@@ -9,6 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.yash.popularmovies.network.MovieFetcher;
+import com.example.yash.popularmovies.R;
 
 import butterknife.ButterKnife;
 
