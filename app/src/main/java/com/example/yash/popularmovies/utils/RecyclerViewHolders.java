@@ -33,8 +33,8 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
         String[] movieData = createMovieData.getMovieData();
         Bundle b = new Bundle();
         b.putStringArray(MOVIE_MESSAGE, movieData);
-        Intent intent = new Intent(view.getContext(), MovieDetailActivity
-                .class);
+        Intent intent = new Intent(view.getContext(),
+                MovieDetailActivity.class);
         intent.putExtras(b);
         view.getContext().startActivity(intent);
     }
