@@ -1,25 +1,30 @@
 package com.example.yash.popularmovies.activities;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
-import android.graphics.Point;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.example.yash.popularmovies.network.MovieFetcher;
 import com.example.yash.popularmovies.R;
+import com.example.yash.popularmovies.fragments.MovieListFragment;
+import com.example.yash.popularmovies.network.MovieFetcher;
 
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        MovieListFragment.OnDataPass{
 
     SharedPreferences sharedpreferences;
-    String sortOrder;
+    String sortOrder = "popular";
     MovieFetcher movie;
+    int spansize = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +37,27 @@ public class MainActivity extends AppCompatActivity {
         sharedpreferences = PreferenceManager.getDefaultSharedPreferences
                 (getApplicationContext());
         sortOrder = sharedpreferences.getString("SortOrder", "popular");
-        final Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
+        Configuration config = getResources().getConfiguration();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction =
+                fragmentManager.beginTransaction();
 
-        int spansize = width / 540;
-        movie = new MovieFetcher(this);
-        movie.setGridLayoutManager(spansize);
-        movie.setRecyclerViewAndAdapter(findViewById(R.id.recycler_view));
-        movie.fetchMovies(sortOrder, 1);
-        movie.setOnClickOnScrollListener();
+        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            /**
+             * Landscape mode of the device
+             */
+            spansize = 3;
+        }else{
+            /**
+             * Portrait mode of the device
+             */
+            spansize = 2;
+        }
+        MovieListFragment movieListFragment = new MovieListFragment();
+        fragmentTransaction.replace(R.id.fragment_container,
+                movieListFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -76,5 +91,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public int getSpanSize() {
+        return spansize;
+    }
+
+    public String getSortOrder() {
+        return sortOrder;
+    }
+
+    public View getRecyclerView() {
+        return findViewById(R.id.recycler_view);
+    }
+
+    @Override
+    public void onDataPass(MovieFetcher data) {
+        movie = data;
     }
 }

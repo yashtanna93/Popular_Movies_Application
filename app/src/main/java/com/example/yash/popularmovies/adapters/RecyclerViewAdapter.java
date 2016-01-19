@@ -51,7 +51,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
             Picasso.with(context).load(R.drawable.notavailable).into(holder
                     .moviePoster);
         } else {
-            Picasso.with(context).load(imageUri.toString()).resize(185,630)
+            Picasso.with(context).load(imageUri.toString()).resize(185,750)
                     .into(holder.moviePoster);
         }
     }
