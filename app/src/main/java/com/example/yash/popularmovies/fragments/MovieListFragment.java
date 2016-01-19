@@ -32,13 +32,13 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.v("FragmentLog", "ViewCreated");
+        //Log.v("FragmentLog", "ViewCreated");
         MainActivity mainActivity = (MainActivity) getActivity();
         int spansize = mainActivity.getSpanSize();
         sortOrder = mainActivity.getSortOrder();
         movie = new MovieFetcher(getActivity());
         movie.setGridLayoutManager(spansize);
-        Log.v("RecyclerView", Integer.toString(R.id.recycler_view));
+        //Log.v("RecyclerView", Integer.toString(R.id.recycler_view));
         movie.setRecyclerViewAndAdapter(view.findViewById(R.id.recycler_view));
         movie.fetchMovies(sortOrder, 1);
         movie.setOnClickOnScrollListener();

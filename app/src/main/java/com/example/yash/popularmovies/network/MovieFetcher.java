@@ -105,10 +105,18 @@ public class MovieFetcher {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (gridLayoutManager.findLastCompletelyVisibleItemPosition() ==
+                Log.v("OnScrollTest", Integer.toString(gridLayoutManager.findLastVisibleItemPosition()));
+                Log.v("MovieImages", Integer.toString(movieImages.size()));
+                if (gridLayoutManager.findLastVisibleItemPosition() >
                         movieImages.size() - 5) {
                     pagecount += 1;
                     fetchMovies(sortOrder, pagecount);
+                    Log.v("Fetching Movies", Integer.toString(pagecount));
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

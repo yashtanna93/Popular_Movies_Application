@@ -42,7 +42,7 @@ public class MovieDetailFragment extends Fragment {
 
         ImageView imageView = ButterKnife.findById(getActivity(), R.id.imageView);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        Picasso.with(getContext()).load(moviePosterURI.toString())
+        Picasso.with(getActivity()).load(moviePosterURI.toString())
                 .into(imageView);
     }
 }
