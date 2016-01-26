@@ -2,8 +2,4 @@
     <string name="app_name">Popular Movies</string>
     <string name="new_page">New Page</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
-    <string name="year">2015</string>
-    <string name="time">120 min</string>
-    <string name="rating">8.1/10</string>
-    <string name="movie_image">Movie Image</string>
 </resources>
